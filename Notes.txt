@@ -1,0 +1,2 @@
+DPivdTteAiNyR95U - mongo
+mongodb+srv://coursera:<password>@cluster0.vub0zll.mongodb.net/?retryWrites=true&w=majority
