@@ -7,6 +7,8 @@ const app = express();
 
 // DB Config
 
+
+//Main Function
 async function main(app) {
   // Connect to MongoDB
 
@@ -36,7 +38,7 @@ async function main(app) {
 
 app.get("/", (req, res) =>
   res.send(
-    "Welcome to the RSS Servier: use -> GET http://localhost:5000/css <- to get feed summary"
+    "Welcome to the RSS Servier: use -> GET http://localhost:5000/rss <- to get feed summary"
   )
 );
 
