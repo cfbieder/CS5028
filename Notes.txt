@@ -1,4 +1,10 @@
-DPivdTteAiNyR95U - mongo
-mongodb+srv://coursera:<password>@cluster0.vub0zll.mongodb.net/?retryWrites=true&w=majority
+Mongo Atlas Connect
+    DPivdTteAiNyR95U - mongo
+    mongodb+srv://coursera:<password>@cluster0.vub0zll.mongodb.net/?retryWrites=true&w=majority
 
-SHIFT-ALT-F - to format
+Visual Studio
+    SHIFT-ALT-F - to format
+
+
+Run Mongo Shell
+    docker exec -it mongo mongosh
