@@ -8,3 +8,6 @@ Visual Studio
 
 Run Mongo Shell
     docker exec -it mongo mongosh
+
+Docker Commands
+    docker compose up -d

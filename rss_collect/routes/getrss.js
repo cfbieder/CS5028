@@ -1,17 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const RSSParser = require("rss-parser");
-
-const rssURI = require("../config/keys").rssURI;
-
-// Load RSS feed model
-const RSSFeed = require('../../models/Rss');
+const DataGateway = require('../components/data/DataGateway');
+const gateway = new DataGateway();
 
 // @route
 // @desc
 // @access  Public
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
+
+  var items = await gateway.readAll()
+  console.log("Fulfilling GET request, returning with %i items", items.length)
+  return res.status(200).json(items);
+
+
+
+
+  /*
   let parser = new RSSParser();
   parser.parseURL(rssURI, function (err, feed) {
     if (err) {
@@ -25,6 +30,12 @@ router.get("/", (req, res) => {
       res.json({ items: feed.items });
     }
   });
+  */
+
+
+
+
 });
+
 
 module.exports = router;
