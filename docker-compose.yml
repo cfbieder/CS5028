@@ -1,8 +1,30 @@
+version: '3'
+
 services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./.docker-data/.rabbit-data:/var/lib/rabbitmq/
+      - ./.docker-data/.rabbit-log:/var/log/rabbitmq/
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports: 
+      - '27016:27017'
+    #to keep data permanent remove comments on below volume
+    #volumes:
+    #  - ./.docker-data/data:/data/db
+
   frontend:
+    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    #command: tail -f /dev/null
+      
