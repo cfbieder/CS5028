@@ -4,9 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=live jest",
-    "app": "NODE_ENV=live nodemon app.js",
-    "mock": "NODE_ENV=test nodemon server.js"
+    "test": "jest",
+    "app": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",

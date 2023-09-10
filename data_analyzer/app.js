@@ -1,14 +1,7 @@
-const helper = require("./components/data/RSSCollector");
 var amqplib = require('amqplib');
-
-
 
 async function main() {
 
-
-    console.log("Getting RSS Feed");
-    let feed = await helper.rssGetFeed();
-    console.log(`Items retreived: ${feed.length}`);
 
     console.log("Starting connection to RabbitMQ");
 
@@ -36,12 +29,16 @@ async function main() {
     await ch1.assertQueue(queue);
 
 
+    // Listener
+    ch1.consume(queue, (msg) => {
+        if (msg !== null) {
+            console.log('Recieved:', msg.content.toString());
+            ch1.ack(msg);
+        } else {
+            console.log('Consumer cancelled by server');
+        }
+    });
 
-    // Sender
-
-    setInterval(() => {
-        ch1.sendToQueue(queue, Buffer.from('something to do'));
-      }, 1000);
 
     console.log("Setup completed");
 
@@ -49,6 +46,3 @@ async function main() {
 
 
 main()
-
-
-

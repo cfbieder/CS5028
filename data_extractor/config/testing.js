@@ -8,11 +8,11 @@ class TestCollector {
     constructor() {
         var test = process.env.NODE_ENV;
         if (test == "test") {
-            console.log("Using Mock Data")
+            //console.log("Using Mock Data")
             this.datasource = DataSource.Mock
         }
         else {
-            console.log("Using Live Data")
+            //console.log("Using Live Data")
             this.datasource = DataSource.Live
         }
     }
@@ -22,9 +22,11 @@ class TestCollector {
         return this.datasource;
     }
 
+
     static get Types() {
         return DataSource;
     }
+
 
 }
 
