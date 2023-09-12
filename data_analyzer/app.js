@@ -1,46 +1,85 @@
+/******************************************************************************************************
+ * Data Analyzer
+ * Chris Biedermann
+ * V1.0
+ * September 2023
+ * 
+ * 
+ *******************************************************************************************************/
+// Docker or Development mode
+var mode = process.env.NODE_MODE;
+console.log("[DA] mode: %s",mode);
+
+
+// Library for RabbitMQ
 var amqplib = require('amqplib');
+// Library for RabbitMQ
+var amqplib = require('amqplib');
+// Sources for RSS data feeds
+const queue = require("../config/config").messageQueue;
+// URL of RabbitMQ server
+if (mode == "docker")
+    rabbitMQ = require("../config/config").rabbitURI_docker;
+else
+    rabbitMQ = require("../config/config").rabbitURI;
+
+const DataFilter = require('./components/data/DataFilter');
+const filter = new DataFilter();
+
 
 async function main() {
 
-
-    console.log("Starting connection to RabbitMQ");
-
-    const conn = await amqplib.connect('amqp://localhost')
+    // Start up messaging system
+    console.log("[DA] Starting connection to RabbitMQ");
+    const conn = await amqplib.connect(rabbitMQ)
         .catch((err) => {
             console.log(
-                "Error:  Unable to connect to RabbitMQ - make sure Mongo Docker is running", err
+                "[DA] Error:  Unable to connect to RabbitMQ - make sure Mongo Docker is running", err
             );
             process.exit();
         })
 
-    console.log("Connected to RabbitMQ.  Starting channel create");
-    const ch1 = await conn.createChannel()
+    console.log("[DA] Connected to RabbitMQ.  Starting channel create");
+    const channel = await conn.createChannel()
         .catch((err) => {
             console.log(
-                "Error:  Unable to connect to create a channel", err
+                "[DA] Error:  Unable to connect to create a channel", err
             );
             process.exit();
         })
 
+    console.log("[DA] Connected to RabbitMQ.  Asserting channel with queue: ", queue);
+
+    await channel.assertQueue(queue, {
+        durable: true
+    });
+
+    channel.prefetch(1);
+    console.log("[DA] Message Queue Setup Complete");
 
 
-    console.log("Created channel on RabbitMQ");
-    const queue = 'tasks';
-    await ch1.assertQueue(queue);
+    console.log("[DA] Waiting for messages in %s.", queue);
 
 
     // Listener
-    ch1.consume(queue, (msg) => {
-        if (msg !== null) {
-            console.log('Recieved:', msg.content.toString());
-            ch1.ack(msg);
-        } else {
-            console.log('Consumer cancelled by server');
+    channel.consume(queue, async function (msg) {
+        var feed = msg.content.toString();
+        feed_json = JSON.parse(feed);
+        console.log(`[DA] Items received from queue: ${feed_json.length}`);
+        feed_clean= await filter.clean(feed_json);
+        for (var item of feed_clean) {
+            console.log('[DA] Title of feed received:',item.title);
         }
+        console.log("[DA] Done");
+        channel.ack(msg);
+
+    }, {
+        noAck: false
     });
 
 
-    console.log("Setup completed");
+
+    console.log("[DA] Setup completed");
 
 }
 

@@ -1,49 +1,94 @@
-const helper = require("./components/data/RSSCollector");
+
+/******************************************************************************************************
+ * Data Collector
+ * Chris Biedermann
+ * V1.0
+ * September 2023
+ * 
+ * Retreive RSS messages from locations included in config file at fixed interval as defined in setup
+ * Messages received are then sent via RabbitMQ to Data Analyzers utiling Fair Dispatching
+ *******************************************************************************************************/
+
+// Docker or Development mode
+var mode = process.env.NODE_MODE;
+console.log("[DE] mode: %s",mode);
+
+
+// Library for RabbitMQ
 var amqplib = require('amqplib');
+// Sources for RSS data feeds
+const rssCollector = require("./components/data/RSSCollector");
+// Name of queue to dispatch mesages
+const queue = require("../config/config").messageQueue;
+// URL of RabbitMQ server
+var rabbitMQ
+if (mode == "docker")
+    rabbitMQ = require("../config/config").rabbitURI_docker;
+else
+    rabbitMQ = require("../config/config").rabbitURI;
 
 
 
+
+delay = (time) => {
+    return new Promise(res => {
+        setTimeout(res, time)
+    })
+};
+
+
+// Main function
 async function main() {
 
 
-    console.log("Getting RSS Feed");
-    let feed = await helper.rssGetFeed();
-    console.log(`Items retreived: ${feed.length}`);
+    if (mode == "docker")
+        await delay(10000);
 
-    console.log("Starting connection to RabbitMQ");
 
-    const conn = await amqplib.connect('amqp://localhost')
+    // Start up messaging system
+    console.log("[DE] Starting connection to RabbitMQ");
+    const conn = await amqplib.connect(rabbitMQ, {
+        timeout: 10000,
+        servername: 'localhost',
+    })
         .catch((err) => {
             console.log(
-                "Error:  Unable to connect to RabbitMQ - make sure Mongo Docker is running", err
+                "[DE] Error:  Unable to connect to RabbitMQ - make sure Mongo Docker is running", err
             );
             process.exit();
         })
 
-    console.log("Connected to RabbitMQ.  Starting channel create");
-    const ch1 = await conn.createChannel()
+    console.log("[DE] Connected to RabbitMQ.  Starting channel create");
+    const channel = await conn.createChannel()
         .catch((err) => {
             console.log(
-                "Error:  Unable to connect to create a channel", err
+                "[DE] Error:  Unable to connect to create a channel", err
             );
             process.exit();
         })
 
+    console.log("[DE] Connected to RabbitMQ.  Asserting channel with queue: ", queue);
+
+    await channel.assertQueue(queue, {
+        durable: true
+    });
+    console.log("[DE] Message Queue Setup Complete");
 
 
-    console.log("Created channel on RabbitMQ");
-    const queue = 'tasks';
-    await ch1.assertQueue(queue);
 
+    //periodic call to get RSS feeds and dispatch to message queue
+    setInterval(async () => {
+        //ch1.sendToQueue(queue, Buffer.from('something to do'));
 
+        console.log("[DE] Getting RSS Feed");
+        let feed = await rssCollector.rssGetFeed();
+        console.log(`[DE] Items retreived: ${feed.length}`);
+        channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
+            persistent: true
+        });
+    }, 5000);
 
-    // Sender
-
-    setInterval(() => {
-        ch1.sendToQueue(queue, Buffer.from('something to do'));
-      }, 1000);
-
-    console.log("Setup completed");
+    console.log("[DE] Setup completed");
 
 }
 

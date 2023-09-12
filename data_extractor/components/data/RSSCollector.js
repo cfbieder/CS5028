@@ -1,12 +1,12 @@
 const RSSParser = require("rss-parser");
-const rssURI = require("../../config/keys").rssURI;
-const TestCollector = require("../../config/testing")
+const rssURI = require("../../../config/config").rssURI;
+const DataSource = require("../../../config/dataSource")
 
-const testCollector = new TestCollector
+const dataSource = new DataSource
 
 async function rssGetFeed() {
 
-  if (testCollector.getSource() == TestCollector.Types.Live) {
+  if (dataSource.getSource() == DataSource.Types.Live) {
     let parser = new RSSParser();
     let res = await parser.parseURL(rssURI)
     console.log("RSS Feed Retreived");

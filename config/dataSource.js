@@ -3,7 +3,7 @@ const DataSource = {
     Live: "Live"
 }
 
-class TestCollector {
+class CollectorSource {
 
     constructor() {
         var test = process.env.NODE_ENV;
@@ -30,6 +30,6 @@ class TestCollector {
 
 }
 
-module.exports = TestCollector
+module.exports = CollectorSource
 
 

@@ -1,0 +1,13 @@
+FROM node:18
+# Create app directory
+WORKDIR /usr/src/parent/rss_collect
+COPY ./data_extractor/package*.json ./
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --omit=dev
+# Bundle app source
+COPY ./data_extractor .
+WORKDIR /usr/src/parent/config
+COPY ./config .
+WORKDIR /usr/src/parent/rss_collect
+CMD [ "npm", "run", "mock" ]
