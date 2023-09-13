@@ -2,7 +2,7 @@ class DateFileter {
 
 
     clean(feed) {
-        console.log("[DA] :Cleaning the data")
+        console.log("[DA] Cleaning the data")
         let cleanFeed = [];
 
         var json = JSON.stringify(feed);
@@ -18,6 +18,7 @@ class DateFileter {
             newItem.content = element['content:encodedSnippet'];
             newItem.guid = element.guid;
             newItem.source = 'PubMed'
+            newItem.link = element.link;
             cleanFeed.push(newItem);
         });
 

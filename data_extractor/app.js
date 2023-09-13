@@ -42,8 +42,9 @@ async function main() {
 
 
     if (mode == "docker")
-        await delay(10000);
+        await delay(9000);
 
+    
 
     // Start up messaging system
     console.log("[DE] Starting connection to RabbitMQ");

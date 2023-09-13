@@ -3,7 +3,7 @@ module.exports = {
     //"mongodb+srv://coursera:DPivdTteAiNyR95U@cluster0.vub0zll.mongodb.net/?retryWrites=true&w=majority",
     //"mongodb://127.0.0.1:27016/RSS",
     //"mongodb://mongo/RSS",
-    "mongodb://127.0.0.1:27017/RSS",
+    "mongodb://127.0.0.1:27016/RSS",
   mongoURI_docker:
     "mongodb://mongo/RSS",
   rabbitURI:
