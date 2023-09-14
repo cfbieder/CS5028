@@ -1,10 +1,10 @@
-const RSS = require('../models/FeedModel');
+const RSS = require('../models/feeds');
 
 class DateGateway {
 
 
 
-  async readAll() {
+  async feed_readAll() {
     console.log("[DA] Reading all Records from DB")
     var items = await RSS.find()
     console.log("[DA] Records Read");
@@ -12,7 +12,7 @@ class DateGateway {
   }
 
 
-  async create(feeds) {
+  async feeds_Create(feeds) {
     console.log("[DA] Adding Records to Database");
 
 

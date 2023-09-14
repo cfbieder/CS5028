@@ -1,6 +1,6 @@
 const RSSParser = require("rss-parser");
-const rssURI = require("../../../config/config").rssURI;
-const DataSource = require("../../../config/dataSource")
+const rssURI = require("../config/config").rssURI;
+const DataSource = require("../config/dataSource")
 
 const dataSource = new DataSource
 
@@ -13,7 +13,7 @@ async function rssGetFeed() {
     return res.items;
   }
   else {
-    const mockdata = require("../../testing/mockRSS.json");
+    const mockdata = require("../../data_extractor/testing/mockRSS.json");
     return mockdata
   }
 }

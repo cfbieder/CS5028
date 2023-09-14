@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+
 // Create Schema
 var RSS = new Schema({
   title : String,

@@ -17,15 +17,15 @@ console.log("[DE] mode: %s",mode);
 // Library for RabbitMQ
 var amqplib = require('amqplib');
 // Sources for RSS data feeds
-const rssCollector = require("./components/data/RSSCollector");
+const rssCollector = require("../components/data/RSSCollector");
 // Name of queue to dispatch mesages
-const queue = require("../config/config").messageQueue;
+const queue = require("../components/config/config").messageQueue;
 // URL of RabbitMQ server
 var rabbitMQ
 if (mode == "docker")
-    rabbitMQ = require("../config/config").rabbitURI_docker;
+    rabbitMQ = require("../components/config/config").rabbitURI_docker;
 else
-    rabbitMQ = require("../config/config").rabbitURI;
+    rabbitMQ = require("../components/config/config").rabbitURI;
 
 
 

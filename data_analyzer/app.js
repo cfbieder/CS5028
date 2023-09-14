@@ -14,33 +14,31 @@ console.log("[DA] mode: %s", mode);
 // Library for RabbitMQ
 var amqplib = require('amqplib');
 // Library for MongoDB
-var mongoose = require("mongoose");
-// Use Express for routing of REST calls
-const express = require("express");
-const app = express()
+var mongoose = require("../components/node_modules/mongoose");
+
 // Name of message que to use
-const queue = require("../config/config").messageQueue;
+const queue = require("../components/config/config").messageQueue;
 // URL of RabbitMQ server
 if (mode == "docker")
-    rabbitMQ = require("../config/config").rabbitURI_docker;
+    rabbitMQ = require("../components/config/config").rabbitURI_docker;
 else
-    rabbitMQ = require("../config/config").rabbitURI;
+    rabbitMQ = require("../components/config/config").rabbitURI;
 // URL of MongoDB server
 if (mode == "docker")
-    db = require("../config/config").mongoURI_docker;
+    db = require("../components/config/config").mongoURI_docker;
 else
-    db = require("../config/config").mongoURI;
+    db = require("../components/config/config").mongoURI;
 
 
 //Helper for database transactions with MongoDB    
-const DataGateway = require('./components/data/DataGateway');
+const DataGateway = require('../components/data/DataGateway');
 const gateway = new DataGateway();
 
-const DataFilter = require('./components/data/DataFilter');
+
+const DataFilter = require('../components/data/DataFilter');
 const filter = new DataFilter();
 
-//Routes
-const data = require("./components/routes/data");
+
 
 delay = (time) => {
     return new Promise(res => {
@@ -55,22 +53,13 @@ async function process_incoming(msg) {
     feed_json = JSON.parse(feed);
     console.log(`[DA] Items received from queue: ${feed_json.length}`);
     feed_clean = await filter.clean(feed_json);
-    //for (var item of feed_clean) {
-    //    console.log('[DA] Title of feed received:', item.title);
-    //}
-    await gateway.create(feed_clean);
+    await gateway.feeds_Create(feed_clean);
 }
 
-async function main(app) {
+async function main() {
 
     if (mode == "docker")
         await delay(8000);
-
-    //Start REST Server
-    const port = process.env.PORT || 5000;
-    app.listen(port, () => {
-        console.log(`[DA] Server Started: Running on port ${port}`);
-    });
 
 
     //Connect to Mongoose
@@ -116,9 +105,6 @@ async function main(app) {
     channel.prefetch(1);
     console.log("[DA] Message Queue Setup Complete");
 
-    //Define routes
-    app.use("/data", data);
-
 
 
     console.log("[DA] Waiting for messages in %s.", queue);
@@ -139,4 +125,4 @@ async function main(app) {
 }
 
 
-main(app)
+main()

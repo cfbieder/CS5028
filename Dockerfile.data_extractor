@@ -7,7 +7,9 @@ RUN npm install
 # RUN npm ci --omit=dev
 # Bundle app source
 COPY ./data_extractor .
-WORKDIR /usr/src/parent/config
-COPY ./config .
+WORKDIR /usr/src/parent/components
+COPY ./components/package*.json ./
+RUN npm install
+COPY ./components .
 WORKDIR /usr/src/parent/data_extractor
 CMD [ "npm", "run", "docker" ]
