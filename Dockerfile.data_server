@@ -1,15 +1,16 @@
 FROM node:18
 # Create app directory
-WORKDIR /usr/src/parent/data_analyzer
-COPY ./data_analyzer/package*.json ./
+WORKDIR /usr/src/parent/data_server
+COPY ./data_server/package*.json ./
 RUN npm install
 # If you are building your code for production
 # RUN npm ci --omit=dev
 # Bundle app source
-COPY ./data_analyzer .
+COPY ./data_server .
 WORKDIR /usr/src/parent/components
 COPY ./components/package*.json ./
 RUN npm install
 COPY ./components .
-WORKDIR /usr/src/parent/data_analyzer
+WORKDIR /usr/src/parent/data_server
+EXPOSE 5000
 CMD [ "npm", "run", "docker" ]

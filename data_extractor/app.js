@@ -11,7 +11,7 @@
 
 // Docker or Development mode
 var mode = process.env.NODE_MODE;
-console.log("[DE] mode: %s",mode);
+console.log("[DE] mode: %s", mode);
 
 
 // Library for RabbitMQ
@@ -44,7 +44,7 @@ async function main() {
     if (mode == "docker")
         await delay(9000);
 
-    
+
 
     // Start up messaging system
     console.log("[DE] Starting connection to RabbitMQ");
@@ -75,6 +75,13 @@ async function main() {
     });
     console.log("[DE] Message Queue Setup Complete");
 
+
+    console.log("[DE] Getting RSS Feed");
+    let feed = await rssCollector.rssGetFeed();
+    console.log(`[DE] Items retreived: ${feed.length}`);
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
+        persistent: true
+    })
 
 
     //periodic call to get RSS feeds and dispatch to message queue

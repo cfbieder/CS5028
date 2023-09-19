@@ -5,10 +5,17 @@
  * September 2023
  * 
  * 
+ * ROUTES SERVED
+ * /feeds - feeds from RSS 
+ * /topics - topics to monitor
+ * 
  *******************************************************************************************************/
 // Docker or Development mode
 var mode = process.env.NODE_MODE;
 console.log("[DA] mode: %s", mode);
+
+
+var bodyParser = require("body-parser");
 
 
 // Use Express for routing of REST calls
@@ -27,13 +34,12 @@ else
 
 
 //Routes
-const data = require("./routes/data");
+const feeds = require("./routes/feeds");
+const topics = require("./routes/topics");
 
 //Helper for database transactions with MongoDB    
 const DataGateway = require('../components/data/DataGateway');
 const gateway = new DataGateway();
-
-console.log(gateway.feed_readAll());
 
 
 
@@ -57,5 +63,11 @@ app.listen(port, () => {
     console.log(`[DA] Server Started: Running on port ${port}`);
 });
 
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+
 //Define routes
-app.use("/data", data);
+app.use("/feeds", feeds);
+app.use("/topics", topics);

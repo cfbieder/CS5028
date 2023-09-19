@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 
 // Create Schema
-var RSS = new Schema({
+var Feeds = new Schema({
   title : String,
   author  : String,
   datePub  : Date,
@@ -15,6 +15,6 @@ var RSS = new Schema({
     type: Date,
     default: Date.now
   }
-}, { collection: 'feeds' });
+});
 
-module.exports = mongoose.model('RSS', RSS);
+module.exports = mongoose.model('Feeds', Feeds);

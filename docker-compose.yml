@@ -39,3 +39,11 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.data_analyzer
+
+  data_server:
+    container_name: data_server
+    build:
+      context: ./
+      dockerfile: Dockerfile.data_server
+    ports:
+    - "5000:5000"
