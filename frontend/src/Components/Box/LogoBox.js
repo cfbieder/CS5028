@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, {Fragment } from "react";
 import Logo from "../Graphics/HITS.png";
 import Grid from "@mui/material/Grid";
 
@@ -13,7 +13,7 @@ export default function LogoBox(props) {
             justify="center"
         >
 
-            <img width='100%' src={Logo} alignitems="center"
+            <img width='100%' src={Logo} alt="logo" alignitems="center"
                 justify="center" component="img">
             </img>
         </Grid>

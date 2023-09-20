@@ -14,13 +14,24 @@
 var mode = process.env.NODE_MODE;
 console.log("[DA] mode: %s", mode);
 
+// Use Express for routing of REST calls
+const express = require("express");
+const app = express()
+
+var cors = require("cors");
+var corsOptions = {
+    origin: "http://192.168.1.252:3000",
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+console.log("Cors");
+app.use(cors(corsOptions));
+
+
 
 var bodyParser = require("body-parser");
 
 
-// Use Express for routing of REST calls
-const express = require("express");
-const app = express()
+
 
 // Library for MongoDB
 var mongoose = require("../components/node_modules/mongoose");
@@ -71,3 +82,5 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Define routes
 app.use("/feeds", feeds);
 app.use("/topics", topics);
+
+module.exports = app;

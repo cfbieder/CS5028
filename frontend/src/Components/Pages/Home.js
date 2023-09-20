@@ -13,6 +13,8 @@ import Alert from "@mui/material/Alert";
 import LoginPanel from "../Panels/LoginPanel";
 import TopicsPanel from "../Panels/TopicsPanel";
 
+import REST from "../Code/REST.js";
+var restFunctions = new REST();
 
 
 export class Home extends Component {
@@ -20,17 +22,45 @@ export class Home extends Component {
     super();
     this.state = {
       name: "",
-      showMessage: false,
-      topic: "A",
+      showTopics: false,
+      topics: [],
+      selectedTopic: "",
     };
     this.nameHandleChange = this.nameHandleChange.bind(this);
     this.topicHandleChange = this.topicHandleChange.bind(this);
     this.resetClick = this.resetClick.bind(this);
     this.buttonClick = this.buttonClick.bind(this);
+    this.topicClick = this.topicClick.bind(this);
   }
 
+  // ***************************************************
+  // Process Functions
+  // ***************************************************
+
+  getFeedsFromTopic = (id) => {
+    var selectedTopic = null;
+    for (var t of this.state.topics) {
+      if (t._id === id) {
+        console.log(t.name);
+        selectedTopic = t;
+      }
+    }
+    var selectedIds = [];
+    console.log(selectedTopic.feeds);
+    for (var i=0;i< selectedTopic.feeds.length; i++) {
+      console.log(selectedTopic.feeds[i]);
+      selectedIds.push(selectedTopic.feeds[i]);
+    }
+    console.log(selectedIds);
+  }
+
+
+  // ***************************************************
+  // Event Handlers
+  // ***************************************************
   componentDidMount = () => {
     console.log("Page Loaded");
+    
   };
 
   nameHandleChange(event) {
@@ -38,21 +68,33 @@ export class Home extends Component {
   }
 
   topicHandleChange(event) {
-    this.setState({ topic: event.target.value });
+    //this.setState({ topic: event.target.value });
   }
 
   buttonClick(n) {
-    this.setState({ showMessage: true });
-    console.log("State", this.state.showMessage);
-    console.log(n);
+    restFunctions.getTopics().then(response => {
+      this.setState({ topics: response }, () => {
+        this.setState({ showTopics: true });
+      });
+    });
+  }
+
+  topicClick(topic) {
+    this.setState({ selectedTopic: topic }, () => {
+      console.log(this.state.selectedTopic);
+      this.getFeedsFromTopic(topic);
+    })
   }
 
   resetClick() {
-    this.setState({ showMessage: false });
+    this.setState({ showTopics: false });
     this.setState({ name: "" });
     this.setState({ topic: "A" });
   }
 
+  // ***************************************************
+  // Render
+  // ***************************************************
   render() {
     const topics = [
       {
@@ -76,48 +118,24 @@ export class Home extends Component {
     return (
       <Box sx={{ flexGrow: 1 }}>
 
-        {!this.state.showMessage && (<LoginPanel buttonClick={this.buttonClick}/> )}
-        {this.state.showMessage && (<TopicsPanel/> )}
+        {!this.state.showTopics && (<LoginPanel buttonClick={this.buttonClick} />)}
+        {this.state.showTopics && (<TopicsPanel topics={this.state.topics} topicsClick = {this.topicClick} />)}
         <Container fixed sx={{ bgcolor: "#bfb8b8", height: "50vh" }}>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
 
-              <p>Select Topics of Interest</p>
-
-                <TextField
-                  id="outlined-select-currency"
-                  select
-                  defaultValue="A"
-                  value={this.state.topic}
-                  onChange={this.topicHandleChange}
-                >
-                  {topics.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-
-                    </MenuItem>
-                  ))}
-                </TextField>
-
-
-            </Grid>
+        <Grid item xs={12}>
+            {this.state.showTopics && (
+              <Alert severity="success"> Success: {this.state.name} has selected Topic</Alert>
+            )}
           </Grid>
 
+          
           <Grid item xs={12}>
-
-          </Grid>
-
-          <Grid item xs={12}>
-            {this.state.showMessage && (<Button color="secondary" onClick={this.resetClick} variant="contained">
-              Select New Item
+            {this.state.showTopics && (<Button color="secondary" onClick={this.resetClick} variant="contained">
+              Logout
             </Button>)}
           </Grid>
 
-          <Grid item xs={12}>
-            {this.state.showMessage && (
-              <Alert severity="success"> Success: {this.state.name} has selected Topic {this.state.topic}</Alert>
-            )}
-          </Grid>
+
         </Container>
       </Box >
     );
