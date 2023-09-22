@@ -5,13 +5,12 @@ import React, { Component } from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 
 import LoginPanel from "../Panels/LoginPanel";
 import TopicsPanel from "../Panels/TopicsPanel";
+import FeedsPanel from "../Panels/FeedsPanel";
 
 import REST from "../Code/REST.js";
 var restFunctions = new REST();
@@ -25,6 +24,7 @@ export class Home extends Component {
       showTopics: false,
       topics: [],
       selectedTopic: "",
+      selectedFeeds: []
     };
     this.nameHandleChange = this.nameHandleChange.bind(this);
     this.topicHandleChange = this.topicHandleChange.bind(this);
@@ -41,17 +41,18 @@ export class Home extends Component {
     var selectedTopic = null;
     for (var t of this.state.topics) {
       if (t._id === id) {
-        console.log(t.name);
         selectedTopic = t;
       }
     }
-    var selectedIds = [];
-    console.log(selectedTopic.feeds);
-    for (var i=0;i< selectedTopic.feeds.length; i++) {
-      console.log(selectedTopic.feeds[i]);
-      selectedIds.push(selectedTopic.feeds[i]);
-    }
-    console.log(selectedIds);
+    this.setState({ selectedTopic: selectedTopic });
+
+    this.setState({ selectedFeeds: selectedTopic.feeds }, () => {
+      restFunctions.getSelectedFeeds(selectedTopic.feeds).then(response => {
+        this.setState({ selectedFeeds: response })
+      })
+
+    });
+
   }
 
 
@@ -60,7 +61,7 @@ export class Home extends Component {
   // ***************************************************
   componentDidMount = () => {
     console.log("Page Loaded");
-    
+
   };
 
   nameHandleChange(event) {
@@ -73,15 +74,18 @@ export class Home extends Component {
 
   buttonClick(n) {
     restFunctions.getTopics().then(response => {
-      this.setState({ topics: response }, () => {
-        this.setState({ showTopics: true });
-      });
+      if (Object.keys(response).length !== 0)
+        this.setState({ topics: response }, () => {
+          this.setState({ showTopics: true });
+          this.setState({ name: n });
+        });
+      else
+        console.log("Error getting data");
     });
   }
 
   topicClick(topic) {
     this.setState({ selectedTopic: topic }, () => {
-      console.log(this.state.selectedTopic);
       this.getFeedsFromTopic(topic);
     })
   }
@@ -89,54 +93,41 @@ export class Home extends Component {
   resetClick() {
     this.setState({ showTopics: false });
     this.setState({ name: "" });
-    this.setState({ topic: "A" });
   }
 
   // ***************************************************
   // Render
   // ***************************************************
   render() {
-    const topics = [
-      {
-        value: "A",
-        label: "Topic A",
-      },
-      {
-        value: "B",
-        label: "Topic B",
-      },
-      {
-        value: "C",
-        label: "Topic C",
-      },
-      {
-        value: "D",
-        label: "Topic D",
-      },
-    ];
+
+    var showAlert = this.state.showTopics && this.state.selectedTopic != ""
 
     return (
-      <Box sx={{ flexGrow: 1 }}>
+      <Box >
 
         {!this.state.showTopics && (<LoginPanel buttonClick={this.buttonClick} />)}
-        {this.state.showTopics && (<TopicsPanel topics={this.state.topics} topicsClick = {this.topicClick} />)}
-        <Container fixed sx={{ bgcolor: "#bfb8b8", height: "50vh" }}>
+        {this.state.showTopics && (<TopicsPanel topics={this.state.topics} topicsClick={this.topicClick} />)}
 
-        <Grid item xs={12}>
-            {this.state.showTopics && (
-              <Alert severity="success"> Success: {this.state.name} has selected Topic</Alert>
-            )}
-          </Grid>
-
-          
-          <Grid item xs={12}>
-            {this.state.showTopics && (<Button color="secondary" onClick={this.resetClick} variant="contained">
-              Logout
-            </Button>)}
-          </Grid>
+        {showAlert && (
+          <Container fixed sx={{ bgcolor: "#bfb8b8", height: "50vh" }}>
+            { (<FeedsPanel selectedFeeds={this.state.selectedFeeds} />)}
 
 
-        </Container>
+            <Grid item xs={12}>
+              <Alert severity="success"> Success: {this.state.name} is displaying papers for: {this.state.selectedTopic.name}</Alert>
+
+            </Grid>
+
+
+            <Grid item xs={12}>
+              { (<Button color="secondary" onClick={this.resetClick} variant="contained">
+                Logout
+              </Button>)}
+            </Grid>
+
+
+          </Container>
+        )}
       </Box >
     );
   }

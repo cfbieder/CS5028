@@ -19,6 +19,15 @@ router
   });
 
 router
+  .route("/selected/:ids")
+  .get(async(req,res) => {
+    console.log("[DS] Fulfilling GET request for selected feeds")
+    var items = await gateway.feeds_ReadMany(JSON.parse(req.params.ids));
+    console.log("[DS] Returning GET with %i items", items.length);
+    return res.status(200).json(items);
+  })
+
+router
   .route("/collection")
   .delete(async (req,res,next) => {
     console.log("[DS] Fulfilling DELETE request")

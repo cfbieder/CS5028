@@ -12,6 +12,13 @@ class DateGateway {
     return items;
   }
 
+  async feeds_ReadMany(ids) {
+    console.log("[DG] Reading selected Records from DB RSS Feeds");
+    var items = await Feeds.find({'_id': { $in: ids}})
+    console.log("[DG] Records Read");
+    return items;
+  }
+
   async feeds_ClearAll() {
     console.log("[DG] Deleting all Records from DB RSS Feeds")
     var res = await Feeds.deleteMany({});
@@ -74,6 +81,7 @@ class DateGateway {
     var items = await Topics.find();
 
   }
+
 
 
 
