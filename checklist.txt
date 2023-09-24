@@ -4,7 +4,7 @@ Data analyzer                                           data_analyzer / nodejs  
 Unit tests                                              npm test / jest                 Add more tests
 Data persistence any data store                         MongoDB                         OK
 Rest collaboration internal or API endpoint             data_analyzer / nodejs          OK
-Product environment                                     Host with Docker images		To go
+Product environment                                     Host with Docker images		    To go
 Integration tests                                       ?
 Using mock objects or any test doubles                  mock RSS data included          OK
 Continuous integration                                  git automated testing           TOGO

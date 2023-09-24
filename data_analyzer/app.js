@@ -141,7 +141,7 @@ async function main() {
     console.log("[DA] Waiting for messages in %s.", queue);
     // Listener
     channel.consume(queue, async function (msg) {
-        //await process_incoming(msg);
+        await process_incoming(msg);
 
         console.log("[DA] Done");
         channel.ack(msg);
@@ -153,7 +153,7 @@ async function main() {
 
 
     console.log("[DA] Setup completed");
-    await process_incoming_test();
+    //await process_incoming_test();
 
 }
 
