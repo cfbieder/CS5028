@@ -24,11 +24,28 @@ app.use(cors());
 var ip = require("ip");
 console.log("[DS] IP address is",ip.address());
 
-
-
 var bodyParser = require("body-parser");
 
+// Main function
+async function topics_setup() {
+    topics_existing = []
+    topics_to_use = [ 'Antioxidant', 'vitamin A', 'vitamin B', 'omega-3', 'vitamin D','vitamin C' ]
+    topics_to_add = []
+    var items = await gateway.topics_readAll();
+    for (item of items) {
+        topics_existing.push(item.name)
+    }
+    for (item of topics_to_use) {
+        if (!topics_existing.includes(item)) {
+            topics_to_add.push(item)
+        }
+    }
+    console.log('[DS] Adding these topics do DB',topics_to_add);
+    for (item of topics_to_add) {
+        await gateway.topics_Insert({'name': item})
+    }
 
+}
 
 
 // Library for MongoDB
@@ -76,6 +93,7 @@ app.listen(port, () => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+topics_setup();
 
 //Define routes
 app.use("/feeds", feeds);
