@@ -12,5 +12,5 @@ COPY ./components/package*.json ./
 RUN npm install
 COPY ./components .
 WORKDIR /usr/src/parent/data_server
-EXPOSE 5000
+#EXPOSE 5000
 CMD [ "npm", "run", "docker" ]

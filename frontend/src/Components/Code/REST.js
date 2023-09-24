@@ -1,5 +1,7 @@
 import axios from "axios";
-
+// Docker or Development mode
+var api = "/api";
+console.log("[FE] API used: %s", api);
 
 //TO DO ADD routing optins for Docker
 export default class Rest {
@@ -11,7 +13,7 @@ export default class Rest {
     axios.defaults.headers.post["Content-Type"] =
       "application/x-www-form-urlencoded";
     await axios
-      .get(`http://192.168.1.252:5000/topics`)
+      .get(api+'/topics')
       .then(response => {
         res = response.data;
       })
@@ -32,7 +34,7 @@ export default class Rest {
     axios.defaults.headers.post["Content-Type"] =
       "application/x-www-form-urlencoded";
     await axios
-      .get(`http://192.168.1.252:5000/feeds/selected/`+JSON.stringify(qry))
+      .get(api+'/feeds/selected/'+JSON.stringify(qry))
       .then(response => {
         res = response.data;
       })

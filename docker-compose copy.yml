@@ -7,9 +7,9 @@ services:
     image: mongo
     ports: 
       - '27016:27017'
+    #to keep data permanent remove comments on below volume
     volumes:
       - ./.docker-data/.mogndo-data:/data/db
-    restart: always
 
   rabbitmq:
     image: rabbitmq:management
@@ -21,54 +21,36 @@ services:
       - ./.docker-data/.rabbit-data:/var/lib/rabbitmq/
       - ./.docker-data/.rabbit-log:/var/log/rabbitmq/
 
-  api:
-    container_name: data_server
-    build:
-      context: ./
-      dockerfile: Dockerfile.data_server
-    #ports:
-    #- "5000:5000"
-    depends_on:
-    - mongo
-
-
-  client:
-    container_name: frontend
-    build:
-      context: ./frontend
-    #ports:
-    #  - "3000:3000"
-    depends_on:
-    - api
-    stdin_open: true
-
-  data_analyzer:
-    container_name: data_analyzer
-    build:
-      context: ./
-      dockerfile: Dockerfile.data_analyzer
-    depends_on:
-    - mongo
-    - rabbitmq
-  
   data_extractor:
     container_name: data_extractor
     build:
       context: ./
       dockerfile: Dockerfile.data_extractor
-    depends_on:
-    - rabbitmq
-
-  nginx:
-    depends_on:
-    - api
-    - client
-    restart: always
+      
+  data_analyzer:
+    container_name: data_analyzer
     build:
-      dockerfile: Dockerfile
-      context: ./nginx
+      context: ./
+      dockerfile: Dockerfile.data_analyzer
+
+  data_server:
+    container_name: data_server
+    build:
+      context: ./
+      dockerfile: Dockerfile.data_server
     ports:
-    - "3050:80"
+    - "5000:5000"
+    depends_on:
+    - mongo
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "data_server"
 
 
 

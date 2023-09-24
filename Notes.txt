@@ -11,3 +11,6 @@ Run Mongo Shell
 
 Docker Commands
     docker compose up -d
+
+
+

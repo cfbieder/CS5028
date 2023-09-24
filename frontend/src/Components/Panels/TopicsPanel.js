@@ -16,6 +16,7 @@ export default function TopicsPanel(props) {
         props.topicsClick(topic);
     }
 
+    console.log("topics",props.topics)
     return (
         <Container fixed sx={{ bgcolor: "#bfb8b8" }}>
             <Grid container columnSpacing={2} rowSpacing={2}>

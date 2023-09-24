@@ -94,7 +94,7 @@ async function main() {
         channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
             persistent: true
         });
-    }, 5000);
+    }, 3600000);
 
     console.log("[DE] Setup completed");
 

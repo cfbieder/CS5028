@@ -19,12 +19,10 @@ const express = require("express");
 const app = express()
 
 var cors = require("cors");
-var corsOptions = {
-    origin: "http://192.168.1.252:3000",
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-console.log("Cors");
-app.use(cors(corsOptions));
+app.use(cors());
+
+var ip = require("ip");
+console.log("[DS] IP address is",ip.address());
 
 
 
@@ -69,7 +67,7 @@ mongoose
     })
 
 //Start REST Server
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`[DA] Server Started: Running on port ${port}`);
 });

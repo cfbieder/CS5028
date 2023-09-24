@@ -7,7 +7,7 @@
     "test": "NODE_ENV=live ODE_MODE=dev jest",
     "app": "NODE_ENV=live NODE_MODE=dev nodemon app.js",
     "mock": "NODE_ENV=test NODE_MODE=dev nodemon app.js",
-    "docker" : "NODE_ENV=test NODE_MODE=docker nodemon app.js"
+    "docker" : "NODE_ENV=live NODE_MODE=docker nodemon app.js"
   },
   "author": "",
   "license": "ISC",
