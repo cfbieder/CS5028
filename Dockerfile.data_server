@@ -10,7 +10,7 @@ COPY ./data_server .
 WORKDIR /parent/components
 COPY ./components/package*.json ./
 RUN npm install
-COPY ./components .
+COPY ./components ./
 WORKDIR /parent/data_server
 #EXPOSE 5000
 CMD [ "npm", "run", "docker" ]
