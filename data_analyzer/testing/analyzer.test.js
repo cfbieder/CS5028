@@ -24,10 +24,23 @@ beforeAll( async () => {
 });
 
 
-test('Test mongo connect', async () => {
+test('Test Topics clear', async () => {
     await topicManager.topics_clear();
-    await topicManager.topics_getAll();
+    expect(await topicManager.topics_getAll()).toEqual([]);
+})
+
+test('Test Topics add', async () => {
+    const topics_to_use = require("../../components/config/config").topicsToUse
+    await topicManager.topics_clear();
     await topicManager.topics_setup();
-    await topicManager.topics_getAll();
+    expect(await topicManager.topics_getAll_Names()).toEqual(topics_to_use);
 
 })
+
+test('Test Topics match', async () => {
+    await topicManager.topics_clear();
+    await topicManager.topics_setup();
+    var item = JSON.parse(await topicManager.topics_getOne('Antioxidant'));
+    console.log(item.feeds);
+})
+

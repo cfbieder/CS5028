@@ -6,26 +6,21 @@ class DateGateway {
 
   //Helpers for feeds (RSS Feeds) database
   async feeds_ReadAll() {
-    console.log("[DG] Reading all Records from DB RSS Feeds")
     var items = await Feeds.find()
     return items;
   }
 
   async feeds_ReadMany(ids) {
-    console.log("[DG] Reading selected Records from DB RSS Feeds");
     var items = await Feeds.find({'_id': { $in: ids}})
     return items;
   }
 
   async feeds_ClearAll() {
-    console.log("[DG] Deleting all Records from DB RSS Feeds")
     var res = await Feeds.deleteMany({});
     return res;
   }
 
   async feeds_Create(feeds) {
-    console.log("[DG] Adding Records to DB Feeds");
-
 
     let toInsert = []
     for (let i = 0; i < feeds.length; i++) {
@@ -39,16 +34,18 @@ class DateGateway {
       }
     }
     var ret = await Feeds.insertMany(toInsert);
-    console.log("[DG] Completed adding items to DB");
     return ret;
   }
 
   //Helpers for topics database
   async topics_readAll() {
-    console.log("[DG] Reading all Records from DB topics")
     var items = await Topics.find()
-    console.log("[DG] Records Read");
     return items;
+  }
+
+  async topics_readOne(name) {
+    var items = await Topics.find({name : name})
+    return items[0];
   }
 
   async topics_Save(items) {
@@ -69,13 +66,11 @@ class DateGateway {
   }
 
   async topics_Delete(topic) {
-    console.log("[DG] Deleting a Record from DB Topics");
     var res = await Topics.deleteOne({ name: topic.name });
     return res;
   }
 
-  async topics_DeleteAll() {
-    console.log("[DG] Deleting all Records from DB Topics")
+  async topics_ClearAll() {
     var res = await Topics.deleteMany({});
     return res;
   }

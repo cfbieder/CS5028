@@ -11,13 +11,26 @@ const DataGateway = require('./DataGateway');
 const gateway = new DataGateway();
 
 async function topics_clear() {
-    console.log("[DS] Clearing Topics")
-   await gateway.topics_DeleteAll()
+   await gateway.topics_ClearAll()
 }
 
 async function topics_getAll() {
     var items = await gateway.topics_readAll();
     return items;
+}
+
+async function topics_getOne(name) {
+    var item = await gateway.topics_readOne(name);
+    return JSON.stringify(item);
+}
+
+async function topics_getAll_Names() {
+    var items = await gateway.topics_readAll();
+    ret = []
+    for (item of items) {
+        ret.push(item.name)
+    }
+    return ret
 }
 
 // Ensure topics exist
@@ -26,7 +39,6 @@ async function topics_setup() {
     topics_to_add = []
     //Default Topics if none extist
     const topics_to_use = require("../config/config").topicsToUse;
-    console.log("[DS] default topics: ", topics_to_use)
     var items = await gateway.topics_readAll();
     for (item of items) {
         topics_existing.push(item.name)
@@ -36,7 +48,6 @@ async function topics_setup() {
             topics_to_add.push(item)
         }
     }
-    console.log('[DS] Adding these topics do DB', topics_to_add);
     for (item of topics_to_add) {
         await gateway.topics_Insert({ 'name': item })
     }
@@ -66,4 +77,4 @@ async function map_To_Topics(items) {
 
 
 
-module.exports = { topics_setup,map_To_Topics,topics_clear,topics_getAll };
+module.exports = { topics_setup,map_To_Topics,topics_clear,topics_getAll,topics_getAll_Names,topics_getOne };
