@@ -26,10 +26,13 @@ console.log("[DS] IP address is",ip.address());
 
 var bodyParser = require("body-parser");
 
-// Main function
+//Default Topics if none extist
+const topics_to_use = require("../components/config/config").topicsToUse;
+console.log("[DS] default topics: ",topics_to_use)
+
+// Ensure topics exist
 async function topics_setup() {
     topics_existing = []
-    topics_to_use = [ 'Antioxidant', 'vitamin A', 'vitamin B', 'omega-3', 'vitamin D','vitamin C' ]
     topics_to_add = []
     var items = await gateway.topics_readAll();
     for (item of items) {
@@ -53,10 +56,8 @@ var mongoose = require("../components/node_modules/mongoose");
 
 
 // URL of MongoDB server
-if (mode == "docker")
-    db = require("../components/config/config").mongoURI_docker;
-else
-    db = require("../components/config/config").mongoURI;
+var db = process.env.MONGO_URI;
+console.log("[DA] Mongo URI: ",db);
 
 
 //Routes

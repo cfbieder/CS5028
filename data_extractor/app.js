@@ -13,21 +13,23 @@
 var mode = process.env.NODE_MODE;
 console.log("[DE] mode: %s", mode);
 
+var dt = process.env.DATA_TYPE;
+console.log("[DE] mode: %s", dt);
+
 
 // Library for RabbitMQ
 var amqplib = require('amqplib');
 // Sources for RSS data feeds
 const rssCollector = require("../components/data/RSSCollector");
 // Name of queue to dispatch mesages
-const queue = require("../components/config/config").messageQueue;
+
+// Name of message que to use
+const queue = process.env.MESSAGE_QUEUE;
+console.log("[DA] Message Queue: ",queue);
+
 // URL of RabbitMQ server
-var rabbitMQ
-if (mode == "docker")
-    rabbitMQ = require("../components/config/config").rabbitURI_docker;
-else
-    rabbitMQ = require("../components/config/config").rabbitURI;
-
-
+var rabbitMQ = process.env.RABBIT_MQ
+console.log("[DA] Rabbit URI: ",rabbitMQ);
 
 
 delay = (time) => {
@@ -94,7 +96,7 @@ async function main() {
         channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
             persistent: true
         });
-    }, 3600000);
+    }, 10000);
 
     console.log("[DE] Setup completed");
 

@@ -11,23 +11,23 @@ var mode = process.env.NODE_MODE;
 console.log("[DA] mode: %s", mode);
 
 
+
 // Library for RabbitMQ
 var amqplib = require('amqplib');
 // Library for MongoDB
 var mongoose = require("../components/node_modules/mongoose");
 
 // Name of message que to use
-const queue = require("../components/config/config").messageQueue;
-// URL of RabbitMQ server
-if (mode == "docker")
-    rabbitMQ = require("../components/config/config").rabbitURI_docker;
-else
-    rabbitMQ = require("../components/config/config").rabbitURI;
+const queue = process.env.MESSAGE_QUEUE;
+console.log("[DA] Message Queue: ", queue);
+
 // URL of MongoDB server
-if (mode == "docker")
-    db = require("../components/config/config").mongoURI_docker;
-else
-    db = require("../components/config/config").mongoURI;
+var db = process.env.MONGO_URI;
+console.log("[DA] Mongo URI: ", db);
+
+// URL of RabbitMQ server
+var rabbitMQ = process.env.RABBIT_MQ
+console.log("[DA] Rabbit URI: ", rabbitMQ);
 
 
 //Helper for database transactions with MongoDB    
@@ -38,6 +38,8 @@ const gateway = new DataGateway();
 const DataFilter = require('../components/data/DataFilter');
 const filter = new DataFilter();
 
+//Functions for Topic Management
+const topicManager = require("../components/data/TopicManager");
 
 
 delay = (time) => {
@@ -47,43 +49,22 @@ delay = (time) => {
 };
 
 
-//Map incoming feeds to topics
-async function map_To_Topics(items) {
-    var topics = await gateway.topics_readAll();
-    for (let i = 0; i < topics.length; i++) {
-        console.log("TOPTIC:    ", topics[i].name)
-        var feeds = topics[i].feeds;
-        for (let j = 0; j < items.length; j++) {
-            if (items[j].content.toUpperCase().includes(topics[i].name.toUpperCase())) {
-                if (!feeds.includes(items[j]._id)) {
-                    console.log("New ",items[j]._id)
-                    feeds.push(items[j]._id);
-                }
-                else {
-                    console.log("Exists ",items[j]._id)
-                }
-            }
-        }
-        topics[i].feeds = feeds;
-    }
-    gateway.topics_Save(topics);
-}
 
-//PRocess new feeds received from message queue
+//Process new feeds received from message queue
 async function process_incoming(msg) {
     var feed = msg.content.toString();
     feed_json = JSON.parse(feed);
     console.log(`[DA] Items received from queue: ${feed_json.length}`);
     feed_clean = await filter.clean(feed_json);
     var newItems = await gateway.feeds_Create(feed_clean);
-    map_To_Topics(newItems);
+    topicManager.map_To_Topics(newItems);
 }
 
 //Mock function used for testing
 async function process_incoming_test() {
     var items = await gateway.feeds_ReadAll();
     console.log(`[DA] TESTING!!! Receive items: ${items.length}`);
-    map_To_Topics(items);
+    topicManager.map_To_Topics(items);
 
 }
 
@@ -136,11 +117,13 @@ async function main() {
     channel.prefetch(1);
     console.log("[DA] Message Queue Setup Complete");
 
-
+    //Ensure default topics exist
+    await topicManager.topics_setup();
 
     console.log("[DA] Waiting for messages in %s.", queue);
     // Listener
     channel.consume(queue, async function (msg) {
+
         await process_incoming(msg);
 
         console.log("[DA] Done");

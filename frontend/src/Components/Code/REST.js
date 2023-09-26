@@ -1,6 +1,7 @@
 import axios from "axios";
 // Docker or Development mode
-var api = "/api";
+//var api = "/api";
+var api = "http://192.168.1.252:3001"
 console.log("[FE] API used: %s", api);
 
 //TO DO ADD routing optins for Docker

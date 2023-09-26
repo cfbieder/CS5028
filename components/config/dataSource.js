@@ -6,8 +6,8 @@ const DataSource = {
 class CollectorSource {
 
     constructor() {
-        var test = process.env.NODE_ENV;
-        if (test == "test") {
+        var test = process.env.DATA_TYPE;
+        if (test == "mock") {
             //console.log("Using Mock Data")
             this.datasource = DataSource.Mock
         }

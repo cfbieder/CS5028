@@ -4,18 +4,21 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "docker": "NODE_MODE=docker nodemon server.js",
-    "server": "nodemon server.js"
+    "test": "env-cmd -e test jest --watch",
+    "docker": "env-cmd -e docker node app.js",
+    "dev": "env-cmd -e development nodemon app.js",
+    "server": "env-cmd -e production nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "ip": "^1.1.8",
-    "mongoose": "^5.13.20"
+    "mongoose": "^5.13.20",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "jest": "^23.6.0",

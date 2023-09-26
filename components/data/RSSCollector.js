@@ -12,7 +12,7 @@ async function rssGetFeed() {
   if (dataSource.getSource() == DataSource.Types.Live) {
     let parser = new RSSParser();
     let res = await parser.parseURL(rssURI[index])
-    console.log("[DE] RSS index ${index} Feed Retreived: ${res.title}");
+    console.log("[DE] RSS index %i Feed Retreived: %s",index,res.title);
     index ++;
     if (index >= rssURI.length)
       index = 0;

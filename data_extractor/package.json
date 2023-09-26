@@ -4,15 +4,17 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=live ODE_MODE=dev jest",
-    "app": "NODE_ENV=live NODE_MODE=dev nodemon app.js",
-    "mock": "NODE_ENV=test NODE_MODE=dev nodemon app.js",
-    "docker" : "NODE_ENV=live NODE_MODE=docker nodemon app.js"
+    "test": "env-cmd -e test jest",
+    "app": "env-cmd -e production node app.js",
+    "dev" : "env-cmd -e development nodemon app.js",
+    "mock": "env-cmd -e mock  nodemon app.js",
+    "docker": "env-cmd -e docker  nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.10.3",
+    "env-cmd": "^10.1.0",
     "mongoose": "^5.13.20",
     "rss-parser": "^3.13.0"
   },

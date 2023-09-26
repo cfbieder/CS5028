@@ -8,14 +8,12 @@ class DateGateway {
   async feeds_ReadAll() {
     console.log("[DG] Reading all Records from DB RSS Feeds")
     var items = await Feeds.find()
-    console.log("[DG] Records Read");
     return items;
   }
 
   async feeds_ReadMany(ids) {
     console.log("[DG] Reading selected Records from DB RSS Feeds");
     var items = await Feeds.find({'_id': { $in: ids}})
-    console.log("[DG] Records Read");
     return items;
   }
 
@@ -60,7 +58,6 @@ class DateGateway {
   }
 
   async topics_Insert(topic) {
-    console.log("[DG] Adding Record to DB Topics");
     var item = await Topics.find({ name: topic.name })
     if (item.length == 0) {
       
@@ -74,6 +71,12 @@ class DateGateway {
   async topics_Delete(topic) {
     console.log("[DG] Deleting a Record from DB Topics");
     var res = await Topics.deleteOne({ name: topic.name });
+    return res;
+  }
+
+  async topics_DeleteAll() {
+    console.log("[DG] Deleting all Records from DB Topics")
+    var res = await Topics.deleteMany({});
     return res;
   }
 
