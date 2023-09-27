@@ -57,7 +57,7 @@ async function topics_setup() {
 async function map_To_Topics(items) {
     var topics = await gateway.topics_readAll();
     for (let i = 0; i < topics.length; i++) {
-        console.log("TOPTIC:    ", topics[i].name)
+        //console.log("TOPTIC:    ", topics[i].name)
         var feeds = topics[i].feeds;
         for (let j = 0; j < items.length; j++) {
             if (items[j].content.toUpperCase().includes(topics[i].name.toUpperCase())) {
@@ -72,7 +72,7 @@ async function map_To_Topics(items) {
         }
         topics[i].feeds = feeds;
     }
-    gateway.topics_Save(topics);
+    await gateway.topics_Save(topics);
 }
 
 

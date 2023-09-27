@@ -1,7 +1,7 @@
 Web application basic form, reporting                   frontend / JS-React             OK
 Data collection                                         data_collector / nodejs         OK
 Data analyzer                                           data_analyzer / nodejs          OK 
-Unit tests                                              npm test / jest                 Add more tests
+Unit tests                                              npm test / jest                 OK
 Data persistence any data store                         MongoDB                         OK
 Rest collaboration internal or API endpoint             data_analyzer / nodejs          OK
 Product environment                                     Host with Docker images		    To go

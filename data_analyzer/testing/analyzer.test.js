@@ -8,19 +8,19 @@ console.log("[DA] Mongo URI: ", db);
 
 const topicManager = require("../../components/data/TopicManager");
 
-beforeAll( async () => {
+beforeAll(async () => {
     await mongoose
-    .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 1000 })  //add timeout
-    .then(() => {
-        console.log("[DA] Connected to MongoDB");
+        .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 1000 })  //add timeout
+        .then(() => {
+            console.log("[DA] Connected to MongoDB");
 
-    })
-    .catch((err) => {
-        console.log(
-            "[DA] Error:  Unable to connect to MongDB - make sure Mongo Docker is running"
-        );
-        process.exit();
-    })
+        })
+        .catch((err) => {
+            console.log(
+                "[DA] Error:  Unable to connect to MongDB - make sure Mongo Docker is running"
+            );
+            process.exit();
+        })
 });
 
 
@@ -37,10 +37,17 @@ test('Test Topics add', async () => {
 
 })
 
-test('Test Topics match', async () => {
+test('Test Topics match', async (done) => {
+    var feed = require("./mock_record.js");
+    feed.mock[0]._id = new mongoose.mongo.ObjectId('56cb91bdc3464f14678934ca');
     await topicManager.topics_clear();
     await topicManager.topics_setup();
-    var item = JSON.parse(await topicManager.topics_getOne('Antioxidant'));
-    console.log(item.feeds);
+    await topicManager.map_To_Topics(feed.mock);
+    await topicManager.topics_getOne('vitamin B').then((item) => {
+        expect(JSON.parse(item).feeds).toEqual(["56cb91bdc3464f14678934ca"]);
+        done()
+    });
+
+
 })
 

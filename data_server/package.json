@@ -4,10 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "env-cmd -e test jest --watch",
-    "docker": "env-cmd -e docker node app.js",
-    "dev": "env-cmd -e development nodemon app.js",
-    "server": "env-cmd -e production nodemon app.js"
+    "test": "env-cmd -e test jest --watch --config ./testing/jest.config.js",
+    "docker": "env-cmd -e docker node server.js",
+    "dev": "env-cmd -e development nodemon server.js",
+    "server": "env-cmd -e production nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,11 +17,11 @@
     "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "ip": "^1.1.8",
-    "mongoose": "^5.13.20",
-    "supertest": "^6.3.3"
+    "mongoose": "^5.13.20"
   },
   "devDependencies": {
     "jest": "^23.6.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "supertest": "^6.3.3"
   }
 }
