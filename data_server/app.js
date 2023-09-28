@@ -26,6 +26,56 @@ console.log("[DS] IP address is",ip.address());
 
 var bodyParser = require("body-parser");
 
+
+
+
+// URL of MongoDB server
+var db = process.env.MONGO_URI;
+console.log("[DA] Mongo URI: ",db);
+
+
+//Routes
+const feeds = require("./routes/feeds");
+const topics = require("./routes/topics");
+
+//Helper for database transactions with MongoDB    
+const DataGateway = require('../components/data/DataGateway');
+const gateway = new DataGateway();
+
+
+// Library for MongoDB
+var mongoose = require("../components/node_modules/mongoose");
+//Connect to Mongoose
+mongoose
+    .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 1000 })  //add timeout
+    .then(() => {
+        console.log("[DA] Connected to MongoDB");
+
+    })
+    .catch((err) => {
+        console.log(
+            "[DA] Error:  Unable to connect to MongDB - make sure Mongo Docker is running"
+        );
+        process.exit();
+    })
+
+
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+//topics_setup();
+
+//Define routes
+app.use("/feeds", feeds);
+app.use("/topics", topics);
+
+module.exports = app;
+
+
+//DELETE  BELOW LATER IF NOT NEEDED
+/*
 //Default Topics if none extist
 const topics_to_use = require("../components/config/config").topicsToUse;
 
@@ -49,50 +99,4 @@ async function topics_setup() {
 
 }
 
-
-// Library for MongoDB
-var mongoose = require("../components/node_modules/mongoose");
-
-
-// URL of MongoDB server
-var db = process.env.MONGO_URI;
-console.log("[DA] Mongo URI: ",db);
-
-
-//Routes
-const feeds = require("./routes/feeds");
-const topics = require("./routes/topics");
-
-//Helper for database transactions with MongoDB    
-const DataGateway = require('../components/data/DataGateway');
-const gateway = new DataGateway();
-
-
-
-//Connect to Mongoose
-mongoose
-    .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 1000 })  //add timeout
-    .then(() => {
-        console.log("[DA] Connected to MongoDB");
-
-    })
-    .catch((err) => {
-        console.log(
-            "[DA] Error:  Unable to connect to MongDB - make sure Mongo Docker is running"
-        );
-        process.exit();
-    })
-
-
-
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-
-topics_setup();
-
-//Define routes
-app.use("/feeds", feeds);
-app.use("/topics", topics);
-
-module.exports = app;
+*/

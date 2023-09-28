@@ -1,7 +1,8 @@
 import axios from "axios";
 // Docker or Development mode
 //var api = "/api";
-var api = "http://192.168.1.252:3001"
+//var api = "http://192.168.1.252:3001"
+var api = process.env.REACT_APP_API || "http://192.168.1.252:3001";
 console.log("[FE] API used: %s", api);
 
 //TO DO ADD routing optins for Docker
@@ -13,6 +14,7 @@ export default class Rest {
     );
     axios.defaults.headers.post["Content-Type"] =
       "application/x-www-form-urlencoded";
+      
     await axios
       .get(api+'/topics')
       .then(response => {
@@ -24,6 +26,7 @@ export default class Rest {
           res = { Error: error.response.status };
         }
       });
+
     return res;
   }
 

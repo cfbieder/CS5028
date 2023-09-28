@@ -4,13 +4,29 @@
   "description": "Retrevies RSS data from pubmed an feeds stories of interest to users",
   "main": "main.js",
   "scripts": {
-    "collect": "npm --prefix ./rss_collect run server",
-    "test": "test"
+    "test": "env-cmd -e test  jest --detectOpenHandles"
   },
   "author": "Biedermann",
   "license": "MIT",
   "dependencies": {
+    "env-cmd": "^10.1.0",
+    "jest": "^29.7.0",
+
     "mongoose": "^5.13.20",
     "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.22.15",
+    "@babel/preset-env": "^7.22.20",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/frontend/testing/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/frontend/testing/fileMock.js"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/frontend/testing/jest-setup.js"
+    ]
   }
 }

@@ -6,8 +6,7 @@ class App extends Component {
 
 
   render() {
-
-    var mode = process.env.NODE_ENV;
+    var mode = process.env.REACT_APP_MODE;
     console.log("[FE] mode: %s", mode);
 
     return (

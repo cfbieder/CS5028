@@ -37,7 +37,7 @@ test('Test Topics add', async () => {
 
 })
 
-test('Test Topics match', async (done) => {
+test('Test Topics match', async () => {
     var feed = require("./mock_record.js");
     feed.mock[0]._id = new mongoose.mongo.ObjectId('56cb91bdc3464f14678934ca');
     await topicManager.topics_clear();
@@ -45,9 +45,12 @@ test('Test Topics match', async (done) => {
     await topicManager.map_To_Topics(feed.mock);
     await topicManager.topics_getOne('vitamin B').then((item) => {
         expect(JSON.parse(item).feeds).toEqual(["56cb91bdc3464f14678934ca"]);
-        done()
     });
 
 
 })
+
+afterAll( async () => {
+    await mongoose.connection.close()
+});
 

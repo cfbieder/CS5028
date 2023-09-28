@@ -22,7 +22,7 @@ export default function LoginPanel(props) {
     }
 
     return (
-        <Container fixed sx={{ bgcolor: "#bfb8b8" }}>
+        <Container data-testid="pnlLogin" fixed sx={{ bgcolor: "#bfb8b8" }}>
             <Grid container columnSpacing={2} rowSpacing={2}>
             <LogoBox/>
                 <Grid item xs={8}>
@@ -38,7 +38,7 @@ export default function LoginPanel(props) {
                             onChange={nameHandleChange}
                         />
 
-                        <Button onClick={buttonClick} variant="contained">
+                        <Button data-testid="btnUsr" onClick={buttonClick} variant="contained">
                             Click to Submit
                         </Button>
                     </Stack>

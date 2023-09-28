@@ -16,6 +16,7 @@ import REST from "../Code/REST.js";
 var restFunctions = new REST();
 
 
+
 export class Home extends Component {
   constructor() {
     super();
@@ -60,7 +61,6 @@ export class Home extends Component {
   // Event Handlers
   // ***************************************************
   componentDidMount = () => {
-    console.log("Page Loaded");
 
   };
 
@@ -72,17 +72,19 @@ export class Home extends Component {
     //this.setState({ topic: event.target.value });
   }
 
-  buttonClick(n) {
-    restFunctions.getTopics().then(response => {
-      if (Object.keys(response).length !== 0)
-        this.setState({ topics: response }, () => {
-          this.setState({ showTopics: true });
-          this.setState({ name: n });
-        });
-      else
-        console.log("Error getting data");
-    });
-  }
+
+
+
+  async buttonClick(n) {
+    var response = await restFunctions.getTopics()
+    if (Object.keys(response).length === 0)
+      response = [];
+    
+    await this.setState({ name: n });
+    await this.setState({ showTopics: true });
+    await this.setState({ topics: response });
+  };
+
 
   topicClick(topic) {
     this.setState({ selectedTopic: topic }, () => {
@@ -99,18 +101,17 @@ export class Home extends Component {
   // Render
   // ***************************************************
   render() {
-
-    var showAlert = this.state.showTopics && this.state.selectedTopic != ""
+    var showAlert = this.state.showTopics && this.state.selectedTopic !== ""
 
     return (
-      <Box >
 
+      <Box data-testid="app">
         {!this.state.showTopics && (<LoginPanel buttonClick={this.buttonClick} />)}
         {this.state.showTopics && (<TopicsPanel topics={this.state.topics} topicsClick={this.topicClick} />)}
 
         {showAlert && (
           <Container fixed sx={{ bgcolor: "#bfb8b8", height: "50vh" }}>
-            { (<FeedsPanel selectedFeeds={this.state.selectedFeeds} />)}
+            {(<FeedsPanel selectedFeeds={this.state.selectedFeeds} />)}
 
 
             <Grid item xs={12}>
@@ -120,7 +121,7 @@ export class Home extends Component {
 
 
             <Grid item xs={12}>
-              { (<Button color="secondary" onClick={this.resetClick} variant="contained">
+              {(<Button color="secondary" onClick={this.resetClick} variant="contained">
                 Logout
               </Button>)}
             </Grid>

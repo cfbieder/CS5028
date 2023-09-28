@@ -26,8 +26,8 @@ async function topics_getOne(name) {
 
 async function topics_getAll_Names() {
     var items = await gateway.topics_readAll();
-    ret = []
-    for (item of items) {
+    var ret = []
+    for (var item of items) {
         ret.push(item.name)
     }
     return ret
@@ -35,15 +35,15 @@ async function topics_getAll_Names() {
 
 // Ensure topics exist
 async function topics_setup() {
-    topics_existing = []
-    topics_to_add = []
+    var topics_existing = []
+    var topics_to_add = []
     //Default Topics if none extist
     const topics_to_use = require("../config/config").topicsToUse;
     var items = await gateway.topics_readAll();
-    for (item of items) {
+    for (var item of items) {
         topics_existing.push(item.name)
     }
-    for (item of topics_to_use) {
+    for (var item of topics_to_use) {
         if (!topics_existing.includes(item)) {
             topics_to_add.push(item)
         }
