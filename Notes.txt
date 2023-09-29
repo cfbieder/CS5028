@@ -13,7 +13,7 @@ Docker Commands
     docker compose up -d
 
 Linux kill port
-    kill $(lsof -t -i:8080)
+    kill $(lsof -t -i:3001)
 
 
 

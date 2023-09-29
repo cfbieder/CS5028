@@ -22,21 +22,21 @@ var cors = require("cors");
 app.use(cors());
 
 var ip = require("ip");
-console.log("[DS] IP address is",ip.address());
+console.log("[DS] IP address is", ip.address());
 
 var bodyParser = require("body-parser");
 
 
 
-
 // URL of MongoDB server
 var db = process.env.MONGO_URI;
-console.log("[DA] Mongo URI: ",db);
+console.log("[DA] Mongo URI: ", db);
 
 
 //Routes
 const feeds = require("./routes/feeds");
 const topics = require("./routes/topics");
+const metrics = require("./routes/metrics")
 
 //Helper for database transactions with MongoDB    
 const DataGateway = require('../components/data/DataGateway');
@@ -61,7 +61,6 @@ mongoose
 
 
 
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -71,8 +70,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/feeds", feeds);
 app.use("/topics", topics);
 
-module.exports = app;
+app.use('/metrics', metrics);
 
+
+module.exports = app;
 
 //DELETE  BELOW LATER IF NOT NEEDED
 /*

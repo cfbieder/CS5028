@@ -21,6 +21,30 @@ services:
       - ./.docker-data/.rabbit-data:/var/lib/rabbitmq/
       - ./.docker-data/.rabbit-log:/var/log/rabbitmq/
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3002:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+
   api:
     container_name: data_server
     build:
@@ -39,8 +63,8 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-    #ports:
-    #  - "3000:3000"
+    ports:
+      - "3000:3000"
     depends_on:
     - api
     stdin_open: true
@@ -73,5 +97,5 @@ services:
     ports:
     - "3050:80"
 
-
-
+volumes:
+  prom_data:
