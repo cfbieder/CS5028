@@ -6,11 +6,8 @@ const DataGateway = require('../../components/data/DataGateway');
 const gateway = new DataGateway();
 
 
-const client = require("prom-client");
-const counter1 = new client.Counter({
-    name: "chris_counter1",
-    help: "Any Arbitary value to help identify this counter",
-});
+const metrics = require("./promClient");
+
 
 
 // @route
@@ -20,11 +17,17 @@ const counter1 = new client.Counter({
 router
     .route("/")
     .get(async (req, res, next) => {
+        var responseTimeInMs = Date.now()
         console.log("[DS] Fulfilling GET request")
-        counter1.inc();
+        metrics.counter
+            .labels(req.method, req.route.path + 'topics', res.statusCode)
+            .inc();
         var items = await gateway.topics_readAll();
         console.log("[DS] Returning GET with %i items", items.length);
         res.status(200).json(items);
+        metrics.histogram
+            .labels(req.method, req.route.path + 'topics', res.statusCode)
+            .observe(responseTimeInMs)
         next();
     })
     .post(async (req, res, next) => {

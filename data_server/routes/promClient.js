@@ -1,6 +1,33 @@
 const client = require("prom-client");
-const collectDefaultMetrics = client.collectDefaultMetrics;
+//const collectDefaultMetrics = client.collectDefaultMetrics;
 
+const histogram = new client.Histogram({
+    name: 'app_histogram',
+    help: 'Duration of HTTP requests in ms',
+    labelNames: ['method', 'route', 'code'],
+    buckets: [5,20,40,60,80]  // buckets for response time from 0.1ms to 500ms
+  })
+
+  const counter = new client.Counter({
+    name: "app_counter",
+    help: "Number of times route is called",
+    labelNames: ['method', 'route', 'code']
+});
+
+
+
+const metrics = {
+    histogram,
+    counter
+}
+
+//Collect Promethues Default metrics
+//collectDefaultMetrics();
+
+module.exports = metrics
+
+
+/*
 // Prom Client Metrics
 
 // Type 1 : Counter
@@ -27,14 +54,4 @@ const summary = new client.Summary({
     help: "Any Arbitary value to help identify this summary",
 });
 
-const metrics = {
-    counter,
-    gauge,
-    histogram,
-    summary
-}
-
-// Collect Promethues Default metrics
-//collectDefaultMetrics();
-
-module.exports = metrics
+*/
