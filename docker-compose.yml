@@ -54,9 +54,10 @@ services:
     - "3001:3001"
     depends_on:
     - mongo
-    volumes: 
-    - ./data_server:/parent/data_server
-    - ./data_server/node_modules:/parent/data_server/node_modules
+    #remove comments for development note - will not work with docker need to comment out
+    #volumes: 
+    #- ./data_server:/parent/data_server
+    #- ./data_server/node_modules:/parent/data_server/node_modules
 
 
   client:
