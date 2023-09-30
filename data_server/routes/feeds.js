@@ -29,10 +29,18 @@ router
 router
   .route("/selected/:ids")
   .get(async (req, res) => {
+    var responseTimeInMs = Date.now()
+    metrics.counter
+      .labels(req.method, req.route.path + 'feeds', res.statusCode)
+      .inc();
     console.log("[DS] Fulfilling GET request for selected feeds")
     var items = await gateway.feeds_ReadMany(JSON.parse(req.params.ids));
     console.log("[DS] Returning GET with %i items", items.length);
-    return res.status(200).json(items);
+    responseTimeInMs = responseTimeInMs - Date.now()
+    res.status(200).json(items);
+    metrics.histogram
+      .labels(req.method, req.route.path + 'feeds', res.statusCode)
+      .observe(responseTimeInMs)
   })
 
 router

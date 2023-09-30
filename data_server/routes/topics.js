@@ -31,7 +31,9 @@ router
         next();
     })
     .post(async (req, res, next) => {
-
+        metrics.counter
+            .labels(req.method, req.route.path + 'topics', res.statusCode)
+            .inc();
         console.log("[DS] Fulfilling PUT new topic request: %s", req.body);
         res.json(await gateway.topics_Insert(req.body))
     })
