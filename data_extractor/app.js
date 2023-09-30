@@ -25,11 +25,11 @@ const rssCollector = require("../components/data/RSSCollector");
 
 // Name of message que to use
 const queue = process.env.MESSAGE_QUEUE;
-console.log("[DA] Message Queue: ",queue);
+console.log("[DA] Message Queue: ", queue);
 
 // URL of RabbitMQ server
 var rabbitMQ = process.env.RABBIT_MQ
-console.log("[DA] Rabbit URI: ",rabbitMQ);
+console.log("[DA] Rabbit URI: ", rabbitMQ);
 
 
 delay = (time) => {
@@ -78,12 +78,14 @@ async function main() {
     console.log("[DE] Message Queue Setup Complete");
 
 
-    console.log("[DE] Getting RSS Feed");
-    let feed = await rssCollector.rssGetFeed();
-    console.log(`[DE] Items retreived: ${feed.length}`);
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
-        persistent: true
-    })
+    for (var i = 0; i < 3; i++) {
+        console.log("[DE] Getting RSS Feed");
+        let feed = await rssCollector.rssGetFeed();
+        console.log(`[DE] Items retreived: ${feed.length}`);
+        channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
+            persistent: true
+        })
+    }
 
 
     //periodic call to get RSS feeds and dispatch to message queue
@@ -96,7 +98,7 @@ async function main() {
         channel.sendToQueue(queue, Buffer.from(JSON.stringify(feed)), {
             persistent: true
         });
-    }, 10000);
+    }, 1000000);
 
     console.log("[DE] Setup completed");
 
