@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "env-cmd -e test jest --watch",
+    "test": "env-cmd -e test jest",
     "docker": "env-cmd -e docker node app.js",
     "dev": "env-cmd -e development nodemon app.js",
     "app": "env-cmd -e production nodemon app.js"
