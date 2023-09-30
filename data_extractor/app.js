@@ -42,9 +42,9 @@ delay = (time) => {
 // Main function
 async function main() {
 
-
+    //delay in docker to ensure mongo and rabbit are up and running
     if (mode == "docker")
-        await delay(9000);
+        await delay(15000);
 
 
 
