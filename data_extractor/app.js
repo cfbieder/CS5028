@@ -90,8 +90,6 @@ async function main() {
 
     //periodic call to get RSS feeds and dispatch to message queue
     setInterval(async () => {
-        //ch1.sendToQueue(queue, Buffer.from('something to do'));
-
         console.log("[DE] Getting RSS Feed");
         let feed = await rssCollector.rssGetFeed();
         console.log(`[DE] Items retreived: ${feed.length}`);
